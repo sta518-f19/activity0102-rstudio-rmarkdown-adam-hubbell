@@ -2,7 +2,10 @@
 title: "Activity 1.2 - RStudio and R Markdown"
 author: "Adam Hubbell"
 date: "8/26/2019"
-output: html_document
+output: 
+  html_document: 
+    fig_height: 8
+    fig_width: 8
 ---
 
 ### Load packages
@@ -16,6 +19,8 @@ library(datasauRus)
 ### Exercise 1
 
 (Type your answer to Exercise 1 here. This exercise does not require any R code.)
+
+datasaurus dozen has 1846 rows and 3 columns
 
 ### Exercise 2
 
@@ -37,35 +42,63 @@ And next calculate the correlation between `x` and `y` in this dataset:
 dino_data %>%
   summarize(r = cor(x, y))
 ```
+dino_data's r value is -0.0645
 
 ### Exercise 3
 
-(Add code and narrative as needed. Note that the R chunks are labeled with `plot-star` and `cor-star` to provide spaces to place the code for plotting and calculating the correlation coefficient. To finish, clean up the narrative by removing these instructions.)
-
-Blah blah blah...
+```{r filter-star}
+star_data <- datasaurus_dozen %>% 
+   filter(dataset == "star")
+```
 
 ```{r plot-star}
-
+ggplot(data = star_data, mapping = aes(x = x, y = y)) +
+   geom_point()
 ```
 
-I'm some text, you should replace me with more meaningful text...
+The star plot's points seems to congregate in each acute angle of the star
 
 ```{r cor-star}
-
+star_data %>% 
+   summarize(r = cor(x, y))
 ```
+The star data's r value is -0.0630
 
 ### Exercise 4
 
 (Add code and narrative as needed. Note that two R chunks are given but they are not labeled. Use the convention from above to name them appropriately.)
 
-```{r}
-
+```{r filter-circle}
+circle_data <- datasaurus_dozen %>% 
+   filter(dataset == "circle")
 ```
 
-```{r}
-
+```{r plot-circle}
+ggplot(data = circle_data, mapping = aes(x = x, y = y)) +
+   geom_point()
 ```
+
+The circle plot looks more eliptical than circular. 
+
+```{r cor-circle}
+circle_data %>% 
+   summarize(r = cor(x, y))
+```
+The circle data's r value is -0.0683
 
 ### Exercise 5
 
 (Add code and narrative as needed. To add R chunks either type out the backticks, curly braces, and the letter `r` or use the Insert chunk button above, green C+.)
+```{r plot-all}
+ggplot(data = datasaurus_dozen, aes(x = x, y = y, color = dataset)) +
+  geom_point() +
+  facet_wrap(~ dataset, ncol = 3) +
+  theme(legend.position = "none")
+```
+
+```{r summerize data}
+datasaurus_dozen %>%
+  group_by(dataset) %>%
+  summarize(r = cor(x, y)) %>%
+  print(13)
+```
